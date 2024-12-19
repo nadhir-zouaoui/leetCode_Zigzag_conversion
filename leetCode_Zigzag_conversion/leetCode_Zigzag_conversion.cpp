@@ -7,55 +7,37 @@
 #include <cstdlib> 
 
 std::string convert(std::string s, int numRows) {
-    if (numRows == 1)
-        return s;
-    char** m = (char**)malloc(numRows * sizeof(char*));
-    int stepRow = 1;
-    int stepCol = 0;
-    int i = 0;
-    int j = 0;
-    int count = 0;
-    int v = 1;
-    int sSize = s.size();
-    while (count < sSize) {
-        if (v)
-            m[i] = (char*)malloc(sSize * sizeof(char));
-        m[i][j] = s[count];
-        if (i == numRows - 1)
-        {
-            stepRow = -1;
-            stepCol = 1;
-            v = 0;
-        }
-        if (i == 0)
-        {
-            stepRow = 1;
-            stepCol = 0;
-        }
-        count++;
-        i += stepRow;
-        j += stepCol;
-    }
-    std::string res;
-    for (int i = 0; i < numRows && i < sSize; i++)
-    {
-        for (int z = 0; z <= j; z++)
-        {
-            if (m[i][z] == '.' || m[i][z] == ',' || toupper(m[i][z]) < 96 && toupper(m[i][z]) > 64)
-            {
-                res += m[i][z];
-            }
-        }
-        free(m[i]);
-    }
-    free(m);
-    return res;
+    if (numRows == 1) return s;
 
+    int sSize = s.size();
+    std::string res;
+    std::vector<std::string> rows(std::min(numRows, sSize));
+
+    int currentRow = 0;
+    bool goingDown = false;
+
+
+    for (char c : s) {
+        rows[currentRow] += c;
+
+        if (currentRow == 0 || currentRow == numRows - 1)
+            goingDown = !goingDown;
+
+        currentRow += goingDown ? 1 : -1;
+    }
+
+    for (const std::string& row : rows) {
+        res += row;
+    }
+
+    return res;
 }
+
 
 int main()
 {
-    std::cout << convert("PAYPALISHIRING", 3);
+    std::cout << convert("ABCDEF", 4) << std::endl;
+    std::cout << "PAHNAPLSIIGYIR" << std::endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
